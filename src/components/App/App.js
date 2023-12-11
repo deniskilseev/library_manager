@@ -6,6 +6,7 @@ import Books from '../Books/Books.js'
 import EditableTable from '../Checkout/EditableTable.js'
 import Checkout from '../Checkout/Checkout.js';
 import Returns from '../Returns/Returns.js';
+import Report from '../Report/Report';
 
 
 
@@ -33,6 +34,10 @@ function App() {
     navigate('/returns');
   };
 
+  const navigateToReport = () => {
+    navigate('/report');
+  };
+
   const navigateToTable = () => {
     navigate('/table');
   };
@@ -45,6 +50,7 @@ function App() {
       <button onClick = {navigateToTable}>Patrons Table</button>
       <button onClick = {navigateToCheckouts}>Checkouts</button>
       <button onClick = {navigateToReturns}>Returns</button>
+      <button onClick = {navigateToReport}>Report</button>
       <h1>Library Manager</h1>
       Welcome! Click books to see current books list. Click patrons to see current patrons list
       <Routes>
@@ -53,6 +59,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/returns" element={<Returns />} />
           <Route path="/table" element={<EditableTable />} />
+          <Route path="/report" element={<Report />} />
           <Route path="/" element={null} />
       </Routes>
     </div>

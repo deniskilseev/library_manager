@@ -1,8 +1,14 @@
 const express = require('express');
 const sqlite3 = require('sqlite3');
-const cors = require('cors');
-const app = express();
+const cors=require("cors");
+const corsOptions ={
+   origin:'*', 
+   credentials:false,            //access-control-allow-credentials:true
+   optionSuccessStatus:200,
+}
 
+const app = express();
+app.use(cors(corsOptions)) // Use this after the variable declaration
 const port = 5050;
 
 app.use(cors());
@@ -95,6 +101,21 @@ app.get('/api/autors', (
   });
 });
 
+// API endpoint to update Users 
+app.post('/api/report', (req, res) => {
+  const {table, user} = req.body;
+  const query = `SELECT * FROM ${table} WHERE userLogin = '${user}'`;
+  console.log(query);
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
 // API endpoint to insert User
 app.post('/api/insertUser', (req, res) => {
   const { Login, password, first, last } = req.body;
@@ -141,6 +162,7 @@ app.post('/api/returnBook', (req, res) => {
 // API endpoint to update Users 
 app.post('/api/updateUsers', (req, res) => {
   const updatedData = req.body;
+  db.run('BEGIN TRANSACTION')
   updatedData.forEach((item) => {
     const { Login, last_name, first_name } = item;
     db.run(
@@ -148,18 +170,22 @@ app.post('/api/updateUsers', (req, res) => {
       [last_name, first_name, Login],
       (err) => {
         if (err) {
+          db.run('ROLLBACK');
           console.error('Error updating data:', err);
         }
       }
     );
   });
+  db.run('COMMIT')
   res.json({ message: 'Data updated successfully' });
 });
+
 
 // API endpoint to delete Users
 app.post('/api/deleteUsers', (req, res) => {
   const updatedData = req.body;
   console.log(req.body);
+  db.run('BEGIN TRANSACTION')
   updatedData.forEach((item) => {
     const Login = item;
     db.run(
@@ -167,11 +193,13 @@ app.post('/api/deleteUsers', (req, res) => {
       [Login],
       (err) => {
         if (err) {
+          db.run('ROLLBACK');
           console.error('Error updating data:', err);
         }
       }
     );
   });
+  db.run('COMMIT')
   res.json({ message: 'Data updated successfully' });
 });
 
