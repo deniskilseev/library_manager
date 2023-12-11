@@ -1,33 +1,38 @@
 import React, {useEffect, useState} from 'react';
+import AddReturn from './AddReturn.js'
 
-function Books() {
+function Returns() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5050/api/books')
+        fetch('http://localhost:5050/api/returns')
           .then((response) => response.json())
           .then((data) => setData(data))
           .catch((error) => console.error(error));
       }, []);
 
     console.log(data);
+
     return (
     <div>
-    <h2>Books</h2>
+    <h2>Returns</h2>
+    <AddReturn />
     <table>
       <thead>
-        <tr>
+      <tr>
+          <th>User</th>
+          <th>Librarian</th>
           <th>ISBN</th>
-          <th>Title</th>
-          <th>Genre</th>
+          <th>Date</th>
         </tr>
       </thead>
       <tbody>
         {data.map((item) => (
-          <tr key = {item.ISBN}>
-            <td>{item.ISBN}</td> 
-            <td>{item.Title}</td> 
-            <td>{item.Genre}</td> 
+          <tr key = {`${item.librarianID}-${item.bookISBN}-${item.date}`}>
+            <td>{item.userLogin}</td>
+            <td>{item.librarianID}</td> 
+            <td>{item.bookISBN}</td> 
+            <td>{new Date(item.date).toLocaleString()}</td> 
           </tr>
         ))}
       </tbody>
@@ -37,4 +42,4 @@ function Books() {
     );
 }
 
-export default Books;
+export default Returns;

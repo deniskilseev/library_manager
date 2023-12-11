@@ -12,15 +12,29 @@ function Patrons() {
       }, []);
 
     console.log(data);
+
     return (
     <div>
     <h2>Patrons</h2>
-    <ul>
+    <table>
+      <thead>
+        <tr>
+          <th>Login</th>
+          <th>Last name</th>
+          <th>First name</th>
+        </tr>
+      </thead>
+      <tbody>
         {data.map((item) => (
-          <li key={item.Login}> {item.First_name}  {item.Last_name} {}</li>
+          <tr key = {item.Login}>
+            <td>{item.Login}</td>
+            <td>{item.last_name}</td> 
+            <td>{item.first_name}</td> 
+          </tr>
         ))}
-      </ul>
-    <NewPatronForm />
+      </tbody>
+    </table>
+    {/* <NewPatronForm /> */}
     </div>
     );
 }

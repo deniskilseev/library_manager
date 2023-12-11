@@ -22,7 +22,9 @@ app.get('/api/users', (req, res) => {
   });
 });
 
-app.get('/api/books', (req, res) => {
+// API to get all books
+app.get('/api/books', (
+  req, res) => {
   db.all('SELECT * FROM Book', (err, rows) => {
     if (err) {
       console.error(err);
@@ -33,19 +35,144 @@ app.get('/api/books', (req, res) => {
   });
 });
 
-// API endpoint to insert data
-app.post('/api/insert', (req, res) => {
-  const { login, password, first, last } = req.body;
+app.get('/api/checkouts', (
+  req, res) => {
+  db.all('SELECT * FROM Checkout', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
 
-  db.run('INSERT INTO User (login, password, First_name, Last_name) VALUES (?, ?, ?, ?)', [login, password, first, last], function (err) {
+app.get('/api/availableBooks', (
+  req, res) => {
+  db.all('SELECT * FROM AvailableBooks', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+app.get('/api/booksToReturn', (
+  req, res) => {
+  db.all('SELECT * FROM BooksToReturn', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+app.get('/api/returns', (
+  req, res) => {
+  db.all('SELECT * FROM Return', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+app.get('/api/autors', (
+  req, res) => {
+  db.all('SELECT * FROM AuthorInfo', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+// API endpoint to insert User
+app.post('/api/insertUser', (req, res) => {
+  const { Login, password, first, last } = req.body;
+
+  db.run('INSERT INTO User (Login, password, first_name, last_name) VALUES (?, ?, ?, ?)', [Login, password, first, last], function (err) {
     if (err) {
       console.error(err);
       res.status(500).json({ error: 'Failed to insert data' });
       return;
     }
-
     res.json({ message: 'Data inserted successfully', lastID: this.lastID });
   });
+});
+
+// API endpoint to insert User
+app.post('/api/checkoutBook', (req, res) => {
+  const { userLogin, librarianID, bookISBN, date } = req.body;
+  console.log(req.body);
+  db.run('INSERT INTO Checkout (userLogin, librarianID, bookISBN, date) VALUES (?, ?, ?, ?)', [userLogin, librarianID, bookISBN, date], function (err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to insert data' });
+      return;
+    }
+    res.json({ message: 'Data inserted successfully', lastID: this.lastID });
+  });
+});
+
+// API endpoint to insert User
+app.post('/api/returnBook', (req, res) => {
+  const { userLogin, librarianID, bookISBN, date } = req.body;
+  console.log(req.body);
+  db.run('INSERT INTO Return (userLogin, librarianID, bookISBN, date) VALUES (?, ?, ?, ?)', [userLogin, librarianID, bookISBN, date], function (err) {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to insert data' });
+      return;
+    }
+    res.json({ message: 'Data inserted successfully', lastID: this.lastID });
+  });
+});
+
+
+// API endpoint to update Users 
+app.post('/api/updateUsers', (req, res) => {
+  const updatedData = req.body;
+  updatedData.forEach((item) => {
+    const { Login, last_name, first_name } = item;
+    db.run(
+      'UPDATE User SET last_name = ?, first_name = ? WHERE Login = ?',
+      [last_name, first_name, Login],
+      (err) => {
+        if (err) {
+          console.error('Error updating data:', err);
+        }
+      }
+    );
+  });
+  res.json({ message: 'Data updated successfully' });
+});
+
+// API endpoint to delete Users
+app.post('/api/deleteUsers', (req, res) => {
+  const updatedData = req.body;
+  console.log(req.body);
+  updatedData.forEach((item) => {
+    const Login = item;
+    db.run(
+      'DELETE FROM User WHERE Login = ?',
+      [Login],
+      (err) => {
+        if (err) {
+          console.error('Error updating data:', err);
+        }
+      }
+    );
+  });
+  res.json({ message: 'Data updated successfully' });
 });
 
 app.listen(port, () => {

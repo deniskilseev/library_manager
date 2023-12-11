@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-function NewPatronForm() {
-  const [formData, setFormData] = useState({ login: '', password: '', first: '', last: '' });
+function NewBookForm() {
+  const [formData, setFormData] = useState({ isbn: '', password: '', first: '', last: '' });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,7 +15,7 @@ function NewPatronForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5050/api/insertUser', {
+      const response = await fetch('http://localhost:5050/api/insert', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,9 +41,9 @@ function NewPatronForm() {
         <label htmlFor="login">Login:</label>
         <input
           type="text"
-          id="Login"
-          name="Login"
-          value={formData.Login}
+          id="login"
+          name="login"
+          value={formData.login}
           onChange={handleChange}
         />
       </div>
