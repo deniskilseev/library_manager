@@ -3,21 +3,18 @@ import NewPatronForm from '../Patrons/NewPatronForm';
 import './EditableTable.css'
 const EditableTable = () => {
 
-const [data, setData] = useState([]);
-const [deletedData, setDeletedData] = useState([]);
-const [editedData, setEditedData] = useState([]);
-
+const [users, setUsers] = useState([]);
+const [deletedUsers, setDeletedUsers] = useState([]);
 
 const handleSubmit = async () => {
     try {
-      // Make a request to your server to update data in the SQL database
-      // Example assuming you have an endpoint '/api/updateBooks'
+      // Request to updateUsers. Sends updated data.
       const response = await fetch('http://localhost:5050/api/updateUsers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(users),
       });
 
       if (response.ok) {
@@ -28,40 +25,42 @@ const handleSubmit = async () => {
     } catch (error) {
       console.error('Error updating data:', error);
     }
-    console.log(deletedData);
+
+    // Submit also handles deleting users.
     const response = await fetch('http://localhost:5050/api/deleteUsers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(deletedData),
+        body: JSON.stringify(deletedUsers),
       });
     
       window.location.reload();
 
   };
 
+
+// Request to fetch users.
 useEffect(() => {
     fetch('http://localhost:5050/api/users')
     .then((response) => response.json())
-    .then((data) => setData(data))
+    .then((users) => setUsers(users))
     .catch((error) => console.error(error));
 }, []);
 
-// console.log(data);
 
-
+// When delete button is pressed, row is removed.
 const handleDeleteRow = (Login) => {
-    const updatedData = data.filter((row) => row.Login !== Login);    
-    setDeletedData([...deletedData, Login]);
-    setData(updatedData);
+    const updatedData = users.filter((row) => row.Login !== Login);    
+    setDeletedUsers([...deletedUsers, Login]);
+    setUsers(updatedData);
 };
 
 const handleEdit = (Login, field, value) => {
-    const updatedData = data.map((item) =>
+    const updatedData = users.map((item) =>
       item.Login === Login ? { ...item, [field]: value } : item
     );
-    setData(updatedData);
+    setUsers(updatedData);
   };
 
 
@@ -76,7 +75,7 @@ const handleEdit = (Login, field, value) => {
         </tr>
       </thead>
       <tbody>
-        {data.map((item) => (
+        {users.map((item) => (
           <tr key={item.Login}>
             <td>{item.Login ?? ''}</td>
             <td>

@@ -105,12 +105,12 @@ useEffect(() => {
       </thead>
       <tbody>
       {responseData.length > 0 && responseData.map((item) => (
-  <tr key={item.ISBN}>
-    <td>{item.bookISBN}</td>
-    <td>{item.librarianID}</td>
-    <td>{item.date}</td>
-  </tr>
-))}
+        <tr key={item.ISBN}>
+            <td>{item.bookISBN}</td>
+            <td>{item.librarianID}</td>
+            <td>{item.date}</td>
+        </tr>
+        ))}
       </tbody>
     </table>
     </div>

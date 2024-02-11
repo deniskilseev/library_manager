@@ -1,6 +1,6 @@
 const express = require('express');
 const sqlite3 = require('sqlite3');
-const cors=require("cors");
+const cors = require("cors");
 const corsOptions ={
    origin:'*', 
    credentials:false,            //access-control-allow-credentials:true
@@ -9,6 +9,7 @@ const corsOptions ={
 
 const app = express();
 app.use(cors(corsOptions)) // Use this after the variable declaration
+
 const port = 5050;
 
 app.use(cors());
@@ -16,7 +17,7 @@ app.use(express.json());
 
 const db = new sqlite3.Database('db.sqlite');
 
-// Example endpoint to fetch data from the SQLite database
+// Get list of all users.
 app.get('/api/users', (req, res) => {
   db.all('SELECT * FROM User', (err, rows) => {
     if (err) {
@@ -28,7 +29,7 @@ app.get('/api/users', (req, res) => {
   });
 });
 
-// API to get all books
+// Get list of all books.
 app.get('/api/books', (
   req, res) => {
   db.all('SELECT * FROM Book', (err, rows) => {
@@ -41,18 +42,7 @@ app.get('/api/books', (
   });
 });
 
-app.get('/api/checkouts', (
-  req, res) => {
-  db.all('SELECT * FROM Checkout', (err, rows) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal server error' });
-      return;
-    }
-    res.json(rows);
-  });
-});
-
+// Get list of all available books (not checked out at the moment)
 app.get('/api/availableBooks', (
   req, res) => {
   db.all('SELECT * FROM AvailableBooks', (err, rows) => {
@@ -65,6 +55,7 @@ app.get('/api/availableBooks', (
   });
 });
 
+// Get list of all all books to return.
 app.get('/api/booksToReturn', (
   req, res) => {
   db.all('SELECT * FROM BooksToReturn', (err, rows) => {
@@ -77,6 +68,20 @@ app.get('/api/booksToReturn', (
   });
 });
 
+// Get list of all checkouts.
+app.get('/api/checkouts', (
+  req, res) => {
+  db.all('SELECT * FROM Checkout', (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+// Get list of all returns.
 app.get('/api/returns', (
   req, res) => {
   db.all('SELECT * FROM Return', (err, rows) => {
@@ -89,6 +94,7 @@ app.get('/api/returns', (
   });
 });
 
+// Get list of current authors.
 app.get('/api/autors', (
   req, res) => {
   db.all('SELECT * FROM AuthorInfo', (err, rows) => {
@@ -101,7 +107,7 @@ app.get('/api/autors', (
   });
 });
 
-// API endpoint to update Users 
+// Create report. 
 app.post('/api/report', (req, res) => {
   const {table, user} = req.body;
   const query = `SELECT * FROM ${table} WHERE userLogin = '${user}'`;
@@ -116,7 +122,7 @@ app.post('/api/report', (req, res) => {
   });
 });
 
-// API endpoint to insert User
+// Create new User
 app.post('/api/insertUser', (req, res) => {
   const { Login, password, first, last } = req.body;
 
@@ -130,7 +136,7 @@ app.post('/api/insertUser', (req, res) => {
   });
 });
 
-// API endpoint to insert User
+// Create data point for book checkout.
 app.post('/api/checkoutBook', (req, res) => {
   const { userLogin, librarianID, bookISBN, date } = req.body;
   console.log(req.body);
@@ -144,7 +150,7 @@ app.post('/api/checkoutBook', (req, res) => {
   });
 });
 
-// API endpoint to insert User
+// Create data point for book return.
 app.post('/api/returnBook', (req, res) => {
   const { userLogin, librarianID, bookISBN, date } = req.body;
   console.log(req.body);
@@ -159,7 +165,7 @@ app.post('/api/returnBook', (req, res) => {
 });
 
 
-// API endpoint to update Users 
+// Update Users
 app.post('/api/updateUsers', (req, res) => {
   const updatedData = req.body;
   db.run('BEGIN TRANSACTION')

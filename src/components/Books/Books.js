@@ -32,7 +32,6 @@ function Books() {
         ))}
       </tbody>
     </table>
-
     </div>
     );
 }
