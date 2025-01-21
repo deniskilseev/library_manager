@@ -1,8 +1,10 @@
-Library manager
+# Library manager
 
+## 
+To use the app use the following commands
 
-To use type 
-
+*Start the front-end*
 npm start
 
+*Start the backend*
 node server.js
